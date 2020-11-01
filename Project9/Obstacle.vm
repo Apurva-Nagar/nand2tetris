@@ -1,0 +1,242 @@
+function Obstacle.new 0
+push constant 3
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push argument 2
+pop this 2
+push pointer 0
+call Obstacle.draw 1
+pop temp 0
+push pointer 0
+return
+function Obstacle.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Obstacle.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Obstacle.erase 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Obstacle.getX 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Obstacle.getY 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Obstacle.moveDown 0
+push argument 0
+pop pointer 0
+push this 1
+push this 2
+add
+push constant 231
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 1
+push constant 2
+add
+pop this 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+add
+push constant 1
+sub
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push argument 1
+push constant 10
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 7
+call Sys.wait 1
+pop temp 0
+goto IF_END1
+label IF_FALSE1
+push argument 1
+push constant 10
+gt
+push argument 1
+push constant 10
+eq
+or
+push argument 1
+push constant 20
+lt
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 6
+call Sys.wait 1
+pop temp 0
+goto IF_END2
+label IF_FALSE2
+push argument 1
+push constant 20
+gt
+push argument 1
+push constant 20
+eq
+or
+push argument 1
+push constant 40
+lt
+and
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 5
+call Sys.wait 1
+pop temp 0
+goto IF_END3
+label IF_FALSE3
+push argument 1
+push constant 40
+gt
+push argument 1
+push constant 40
+eq
+or
+push argument 1
+push constant 60
+lt
+and
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 4
+call Sys.wait 1
+pop temp 0
+goto IF_END4
+label IF_FALSE4
+push argument 1
+push constant 60
+gt
+push argument 1
+push constant 60
+eq
+or
+push argument 1
+push constant 80
+lt
+and
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 3
+call Sys.wait 1
+pop temp 0
+goto IF_END5
+label IF_FALSE5
+push argument 1
+push constant 80
+gt
+push argument 1
+push constant 80
+eq
+or
+push argument 1
+push constant 100
+lt
+and
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 2
+call Sys.wait 1
+pop temp 0
+goto IF_END6
+label IF_FALSE6
+push constant 1
+call Sys.wait 1
+pop temp 0
+label IF_END6
+label IF_END5
+label IF_END4
+label IF_END3
+label IF_END2
+label IF_END1
+push constant 0
+not
+return
+goto IF_END0
+label IF_FALSE0
+push pointer 0
+call Obstacle.erase 1
+pop temp 0
+push constant 0
+return
+label IF_END0

@@ -1,0 +1,94 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// By - Apurva Nagar - 2020
+// File name: projects/09/ObstacleCarRace/Car.jack
+
+
+/** 
+ * Player Car Class
+ */
+class Car {
+
+   field int x, y;   //coordinate of car
+   field int size;   //size of car body
+
+   /** Constructor also calls draw() */
+   constructor Car new(int Ax, int Ay, int Asize) 
+   {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return this;
+   }
+
+   /** Disposes this car. */
+   method void dispose() 
+   {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the car on the screen. */
+   method void draw() 
+   {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + size, y + size);    //Car Body
+      
+      //Car Wheels
+      do Screen.drawRectangle(x - 5, y + 5, x, y + 10);
+      do Screen.drawRectangle(x - 5, y + 20, x, y + 25);
+      do Screen.drawRectangle(x + size, y + 5, x + size + 5, y + 10);
+      do Screen.drawRectangle(x + size, y + 20, x + size + 5, y + 25);
+      return;
+   }
+
+   /** Erases the car from the screen. */
+   method void erase() 
+   {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      do Screen.drawRectangle(x - 5, y + 5, x, y + 10);
+      do Screen.drawRectangle(x - 5, y + 20, x, y + 25);
+      do Screen.drawRectangle(x + size, y + 5, x + size + 5, y + 10);
+      do Screen.drawRectangle(x + size, y + 20, x + size + 5, y + 25);
+      return;
+   }
+
+   /** Get X coordinate of Car */
+   method int getX()
+   {
+      return x;
+   }
+
+   /** Get Y coordinate of Car */
+   method int getY()
+   {
+      return y;
+   }
+
+   /** Moves the Car left by 50 pixels. */
+   method void moveLeft() 
+   {
+      if (x > 166)         //Check for left wall
+      {
+         do erase();       //erase the car
+         let x = x - 50;   //To Move 50 pixels left 
+         do draw();        //Draw the car again
+      }
+      return;
+   }
+
+   /** Moves the Car right by 50 pixels. */
+   method void moveRight() 
+   {
+      if ((x + size) < 342) //Check for right wall
+      {
+         do erase();       //erase the car
+         let x = x + 50;   //To Move 50 pixels right
+         do draw();        //Draw the car again
+      }
+      return;
+   }
+}

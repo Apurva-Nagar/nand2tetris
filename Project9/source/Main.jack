@@ -1,0 +1,36 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// By - Apurva Nagar - 2020
+// File name: projects/09/ObstacleCarRace/Main.jack
+
+/** 
+ *Initializes a new Obstacle Car Race game and starts running it. 
+ *Seeds the Pseudo Random Number Generator
+ */
+class Main 
+{
+    function void main() 
+    {
+        var CarGame game;			//New CarGame object
+        var char key;
+        var int count;				//counter to seed the Random class 
+        let count = 0;
+
+        do Output.moveCursor(11,20);
+     	do Output.printString("Press [SPACE] To Start");
+   
+     	while(~(key=32))			//Check if SPACE pressed
+     	{
+     		let key = Keyboard.keyPressed();
+     		let count = count + 1;
+     	}
+
+     	do Screen.clearScreen();	//Clear the Screen
+     	do Random.setSeed(count);	//Seed the Random counter
+     	let game = CarGame.new();	//Initialize game, call the CarGame constructor
+        do game.run();				//Run the game
+        do game.dispose();			//dispose this CarGame object
+        return;
+    }
+}

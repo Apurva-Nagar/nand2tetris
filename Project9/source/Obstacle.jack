@@ -1,0 +1,125 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// By - Apurva Nagar - 2020
+// File name: projects/09/ObstacleCarRace/Obstacle.jack
+
+
+/** 
+ * Obstacle Class
+ */
+class Obstacle 
+{
+
+   field int x, y;   //Obstacle coordinates
+   field int size;   //Size of object
+
+   /** Constructor also calls draw() */
+   constructor Obstacle new(int Ax, int Ay, int Asize) 
+   {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return this;
+   }
+
+   /** Disposes this car. */
+   method void dispose() 
+   {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the car on the screen. */
+   method void draw() 
+   {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+
+   /** Erases the car from the screen. */
+   method void erase() 
+   {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+
+   /** Get X coordinate of Car */
+   method int getX()
+   {
+      return x;
+   }
+
+   /** Get Y coordinate of Car */
+   method int getY()
+   {
+      return y;
+   }
+
+   /**Moves the obstacle down by 2 pixels. Return False if Obstacle can't be moved further. */
+   method bool moveDown(int score) 
+   {
+      if ((y + size) < 231)                                                   //Check for ending
+      {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(x, y, x + size, y + 1);                      //Erase 2 pixel
+         let y = y + 2; 
+         do Screen.setColor(true);
+         do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);      //Redraw 2 pixels ahead
+         
+         //Increase obstacle speed as score increases.
+         if (score < 10)
+         {
+            do Sys.wait(7);
+         }
+         else
+         {
+            if(((score > 10)|(score = 10)) & (score < 20))
+            {
+               do Sys.wait(6);
+            }
+            else
+            {
+               if(((score > 20)|(score = 20)) & (score < 40))
+               {
+                  do Sys.wait(5);
+               }
+               else
+               {
+                  if(((score > 40)|(score = 40)) & (score < 60))
+                  {
+                     do Sys.wait(4);
+                  }
+                  else
+                  {
+                     if(((score > 60)|(score = 60)) & (score < 80))
+                     {
+                        do Sys.wait(3);
+                     }
+                     else
+                     {
+                        if(((score > 80)|(score = 80)) & (score < 100))
+                        {
+                           do Sys.wait(2);
+                        }
+                        else
+                        {
+                           do Sys.wait(1);
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         return true;
+      }
+      else              //If Obstacle has reached the end, erase it.
+      {
+         do erase();
+         return false;
+      }
+   }
+}

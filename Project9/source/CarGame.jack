@@ -1,0 +1,195 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// By - Apurva Nagar - 2020
+// File name: projects/09/ObstacleCarRace/CarGame.jack
+
+
+/** 
+ * CarGame Class
+ */
+class CarGame 
+{
+   field Car car;             //Car Class object
+   field Obstacle obs;        //Obstacle Class object
+   
+   field Array obstacle_set;  //Array to store the current obstacle objects
+   field Array lane;          //Array storing the possible lane X coordinates
+   field Array flag;          //Array of flag for each obstacle in obstacle_set
+
+   field int direction;       //Direction for player car, initially 0
+   field int score;           //store the score
+
+
+   /** Constructs a new CarGame. */
+   constructor CarGame new() 
+   {
+      do enviornment();                   //Sets up the game enviornment
+
+      let score = 0;
+      let car = Car.new(266, 200, 30);    //Initial car spawing coordinates.
+      let direction = 0;                  // initial state is no movement
+
+      let lane = Array.new(4);
+      let lane[0] = 166;
+      let lane[1] = 216;
+      let lane[2] = 266;
+      let lane[3] = 316;
+
+
+      let obstacle_set = Array.new(3);
+
+      //Selecting random lane for each obstacle
+      let obstacle_set[0] = Obstacle.new(lane[Random.randRange(3)], 0, 30);   
+      let obstacle_set[1] = Obstacle.new(lane[Random.randRange(3)], 100, 30);
+      let obstacle_set[2] = Obstacle.new(lane[Random.randRange(3)], 40, 30);
+
+      let flag = Array.new(3);
+      let flag[0] = true; 
+      let flag[1] = true; 
+      let flag[2] = true; 
+
+      return this;
+   }
+
+
+   /** Disposes this game. */
+   method void dispose() 
+   {
+      do car.dispose();
+      do obs.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Sets up the Game enviornment. The score, bottom-line, left and right walls and instructions */
+   method void enviornment() 
+   {
+      do Screen.setColor(true);
+      do Screen.drawLine(0, 233, 511, 233);
+      do Output.moveCursor(22,0);
+      do Output.printString("Score:");
+      do Output.moveCursor(22,7);
+      do Output.printInt(score);
+      do Screen.drawRectangle(0, 0, 156, 230);
+      do Screen.drawLine(206, 0, 206, 230);
+      do Screen.drawLine(256, 0, 256, 230);
+      do Screen.drawLine(306, 0, 306, 230);
+      do Screen.drawRectangle(356, 0, 511, 230);
+      do Screen.setColor(false);
+      do Screen.drawRectangle(0, 100, 150, 150);
+      do Output.moveCursor(11,2);
+      do Output.printString("Press <- Go Left");
+      do Screen.drawRectangle(362, 100, 511, 150);
+      do Output.moveCursor(11,46);
+      do Output.printString("Press -> Go Right");
+      return;
+   }
+
+
+   /** Moves the square in the current direction. */
+   method void moveCar() 
+   {
+      if (direction = 1) { do car.moveLeft(); }
+      if (direction = 2) { do car.moveRight(); }
+      do Sys.wait(5);  // delays the next movement
+      return;
+   }
+
+   /** Update the score in screen */
+   method void updateScore()
+   {
+      do Output.moveCursor(22,7);
+      do Output.printInt(score);
+      return;
+   }
+
+   /** Shows end game screen and score then halts execution */
+   method void endGame()
+   {
+      do Screen.clearScreen();
+      do Output.moveCursor(11,20);
+      do Output.printString("!!! Game Over !!!");
+      do Output.println();
+      do Output.moveCursor(13,22);
+      do Output.printString("Your Score: ");
+      do Output.moveCursor(13,35);
+      do Output.printInt(score);
+      do Sys.halt();
+      return;
+   }
+
+   /** Checks for collion of Obstacle and Car */
+   method void checkCollision(Obstacle ob)
+   {  
+      //If Car and Obstacle are in same lane and obstacle is at of ahead of car positon
+
+      if((ob.getX() = car.getX()) & ((ob.getY()>car.getY()) | (ob.getY()=car.getY()))) 
+      {
+         do endGame();  //End the Game
+      }
+      return;
+   }
+
+   /** Moves the Obstacle and creates new one if current one has reached the end. */
+   method void moveObstacle()
+   {
+      var int i;
+      let i = 0;
+      while(i<3)
+      {
+         let obs = obstacle_set[i];
+         if (flag[i])                           //If obstacle can be moved further
+         {
+            let flag[i] = obs.moveDown(score);
+            do checkCollision(obs);             //check for collison
+         }
+         else                                   //If obstacle can't be moved further
+         {
+            let score = score + 1;              //Increment score
+            do obs.dispose();                   //dispose this obstacle object
+            let obstacle_set[i] = Obstacle.new(lane[Random.randRange(3)], 0, 30);   //New Obstacle in Random lane 
+            let flag[i] = true;                 //Flag reinitialized to true.
+         }
+         let i = i + 1;
+      }
+      return;
+   }
+
+    /** Run the game. */
+   method void run() 
+   {
+      var char key;  
+      var boolean exit;
+      let exit = false;
+      
+      while (~exit) 
+      {
+         while (key = 0)                        //If no key is being pressed
+         {
+            let key = Keyboard.keyPressed();
+            do moveObstacle();
+            do updateScore();
+         }
+
+         if (key = 81)  { let exit = true; }     // q key
+         if (key = 130) { let direction = 1; }   // left arrow
+         if (key = 132) { let direction = 2; }   // right arrow
+
+         do moveCar();                           //Move the car in a toggle fashion
+         let direction = 0;                      //direction back to 0
+
+         while (~(key = 0))                      //If a key is being pressed
+         {
+            let key = Keyboard.keyPressed();
+            do moveObstacle();
+            do updateScore();
+         }
+     }
+     return;
+   }
+}
+
+
+
+
